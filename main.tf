@@ -90,7 +90,7 @@ resource "aws_route_table_association" "private" {
 
 resource "aws_instance" "public" {
   ami           = "ami-0b6d9d3d33ba97d99"
-  instance_type = "t3.micro"
+  instance_type = "t2.medium"
   subnet_id     = aws_subnet.public.id
 
   tags = {
@@ -100,7 +100,7 @@ resource "aws_instance" "public" {
 
 resource "aws_instance" "private" {
   ami           = "ami-0b6d9d3d33ba97d99"
-  instance_type = "t3.micro"
+  instance_type = "t2.medium"
   subnet_id     = aws_subnet.private.id
 
   tags = {
