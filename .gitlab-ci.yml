@@ -1,0 +1,65 @@
+image:
+  name: registry.gitlab.com/gitlab-org/gitlab-build-images:terraform
+  entrypoint: [""]
+
+variables:
+  AWS_DEFAULT_REGION: "us-east-1"
+  TF_IN_AUTOMATION: "true"
+  TF_INPUT: "false"
+
+cache:
+  key: terraform
+  paths:
+    - .terraform/
+
+stages:
+  - validate
+  - plan
+  - apply
+  - destroy
+
+before_script:
+  - terraform --version
+  - terraform init
+
+validate:
+  stage: validate
+  tags:
+    - gitlab-org
+  script:
+    - terraform validate
+
+plan:
+  stage: plan
+  tags:
+    - gitlab-org
+  script:
+    - terraform plan -out=planfile
+  artifacts:
+    paths:
+      - planfile
+    expire_in: 1 day
+
+apply:
+  stage: apply
+  tags:
+    - gitlab-org
+  script:
+    - terraform apply -input=false planfile
+  dependencies:
+    - plan
+  when: manual
+  allow_failure: false
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+
+destroy:
+  stage: destroy
+  tags:
+    - gitlab-org
+  script:
+    - terraform destroy -input=false -auto-approve
+  when: manual
+  allow_failure: false
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
