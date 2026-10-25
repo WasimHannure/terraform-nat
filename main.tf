@@ -5,7 +5,7 @@ resource "aws_vpc" "main" {
   enable_dns_hostnames = true
 
   tags = {
-    Name = "nat-vpc"
+    Name = "jenkins-vpc"
   }
 }
 
@@ -30,7 +30,7 @@ resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.main.id
 
   tags = {
-    Name = "my-igw"
+    Name = "jenkins-igw"
   }
 }
 
@@ -43,7 +43,7 @@ resource "aws_route_table" "public" {
   }
 
   tags = {
-    Name = "public-route-table"
+    Name = "jenkins-public-route-table"
   }
 }
 
@@ -56,7 +56,7 @@ resource "aws_nat_gateway" "natgw" {
   subnet_id     = aws_subnet.public.id
 
   tags = {
-    Name = "my-NAT"
+    Name = "jenkins-NAT"
   }
 
   # To ensure proper ordering, it is recommended to add an explicit dependency
@@ -74,7 +74,7 @@ resource "aws_route_table" "private" {
   }
 
   tags = {
-    Name = "private-route-table"
+    Name = "jenkins-private-route-table"
   }
 }
 
@@ -94,7 +94,7 @@ resource "aws_instance" "public" {
   subnet_id     = aws_subnet.public.id
 
   tags = {
-    Name = "public-instance"
+    Name = "jenkins-public-instance"
   }
 }
 
@@ -104,6 +104,6 @@ resource "aws_instance" "private" {
   subnet_id     = aws_subnet.private.id
 
   tags = {
-    Name = "private-instance"
+    Name = "jenkins-private-instance"
   }
 }
